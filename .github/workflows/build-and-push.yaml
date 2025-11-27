@@ -1,0 +1,66 @@
+name: build-and-deploy
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  timestamp:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    steps:
+      - name: Sleep to test timeout
+        run: |
+          echo "Sleeping for 30 seconds..."
+          sleep 45
+          echo "Sleep completed"
+
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    needs:
+      - timestamp
+    steps:
+      - name: Sleep to test timeout
+        run: |
+          echo "Sleeping for 30 seconds..."
+          sleep 30
+          echo "Sleep completed"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.ref }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: luuna/oz-catalog-service
+
+      - name: Extract branch name
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Sleep to test timeout
+        run: |
+          echo "Sleeping for 10 seconds..."
+          sleep 10
+          echo "Sleep completed"
+
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    needs:
+      - build
+    steps:
+      - name: Sleep to test timeout
+        run: |
+          echo "Sleeping for 45 seconds..."
+          sleep 45
+          echo "Sleep completed"
